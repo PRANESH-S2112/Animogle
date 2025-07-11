@@ -1,63 +1,231 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Animogle - Anime x Finance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      color: #00ffd9;
-      text-shadow: 0 0 8px #00ffc3;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    a.button {
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      background: linear-gradient(45deg, #ff6a00, #ee0979);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    a.button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #ff6a00, 0 0 30px #ee0979;
-    }
-  </style>
-  <link rel="icon" type="image/png" href="favicon.png" />
-<link rel="apple-touch-icon" href="favicon.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finance Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-  <h1>👾 Welcome to Animogle</h1>
-  <div class="button-group">
-    <a href="anime.html" class="button">🔥 Anime World</a>
-    <a href="finance.html" class="button">💰 Finance World</a>
+<body class="bg-gray-100 text-gray-900 p-4">
+  <div class="max-w-md mx-auto space-y-6">
+    <h1 class="text-2xl font-bold text-center">📚 SELF FINANCE TRACKER</h1><!-- Summary Section -->
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-lg font-semibold">📌 Summary</h2>
+  <p id="summary-income" class="text-green-700 font-medium mt-2">Total Income: ₹0</p>
+  <p id="summary-expense" class="text-red-600 font-medium">Total Expenses: ₹0</p>
+  <p id="summary-balance" class="text-blue-700 font-semibold">Net Balance: ₹0</p>
+</section>
+
+<!-- Filters -->
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-lg font-semibold">🗓️ Filter by Month & Year</h2>
+  <div class="flex gap-2 mt-2">
+    <input type="month" id="filter-date" class="p-2 border rounded w-full" onchange="applyFilters()">
+    <button onclick="clearFilters()" class="bg-gray-300 px-3 py-2 rounded text-sm">Clear</button>
   </div>
-</body>
+</section>
+
+<!-- Income Tracker -->
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-lg font-semibold">💼 Income Tracker</h2>
+  <form id="income-form" class="mt-2 flex flex-col gap-2">
+    <input type="text" id="income-desc" placeholder="Source Description" required class="p-2 border rounded" />
+    <input type="number" id="income-amount" placeholder="Amount" required class="p-2 border rounded" />
+    <input type="date" id="income-date" class="p-2 border rounded" required />
+    <button type="submit" class="bg-green-600 text-white p-2 rounded">Add Income</button>
+  </form>
+  <ul id="income-list" class="mt-4 text-sm space-y-2"></ul>
+</section>
+
+<!-- Expense Tracker -->
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-lg font-semibold">💸 Expense Tracker</h2>
+  <form id="expense-form" class="mt-2 flex flex-col gap-2">
+    <input type="text" id="desc" placeholder="Description" required class="p-2 border rounded" />
+    <input type="number" id="amount" placeholder="Amount" required class="p-2 border rounded" />
+    <select id="category" class="p-2 border rounded">
+      <option>Food</option>
+      <option>Transport</option>
+      <option>Utilities</option>
+      <option>Others</option>
+    </select>
+    <input type="date" id="date" class="p-2 border rounded" required/>
+    <button type="submit" class="bg-blue-600 text-white p-2 rounded">Add Expense</button>
+  </form>
+  <ul id="expense-list" class="mt-4 text-sm space-y-2"></ul>
+  <canvas id="expense-chart" class="mt-4" height="200"></canvas>
+</section>
+
+<!-- SIP Calculator -->
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-lg font-semibold">📈 SIP Calculator</h2>
+  <input id="sip-amount" class="border p-2 rounded w-full mt-2" placeholder="Monthly Investment" type="number">
+  <input id="sip-years" class="border p-2 rounded w-full mt-2" placeholder="Duration (Years)" type="number">
+  <input id="sip-rate" class="border p-2 rounded w-full mt-2" placeholder="Expected Annual Return (%)" type="number">
+  <button onclick="calculateSIP()" class="bg-indigo-600 text-white w-full py-2 rounded mt-2">Calculate</button>
+  <p id="sip-result" class="mt-2 text-green-600 font-medium"></p>
+</section>
+
+<!-- Lumpsum MF Calculator -->
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-lg font-semibold">💰 Lumpsum Return Calculator</h2>
+  <input id="lump-amount" class="border p-2 rounded w-full mt-2" placeholder="Initial Investment" type="number">
+  <input id="lump-years" class="border p-2 rounded w-full mt-2" placeholder="Duration (Years)" type="number">
+  <input id="lump-rate" class="border p-2 rounded w-full mt-2" placeholder="Expected Annual Return (%)" type="number">
+  <button onclick="calculateLumpsum()" class="bg-indigo-600 text-white w-full py-2 rounded mt-2">Calculate</button>
+  <p id="lump-result" class="mt-2 text-green-600 font-medium"></p>
+</section>
+
+<!-- Basic Finance Lessons -->
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-lg font-semibold">📘 Finance Lessons</h2>
+  <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+    <li><strong>Budgeting:</strong> Track your income and spending to avoid overspending.</li>
+    <li><strong>Emergency Fund:</strong> Save at least 3-6 months of expenses.</li>
+    <li><strong>Invest Early:</strong> Use SIPs and MFs to beat inflation over time.</li>
+    <li><strong>Track Net Worth:</strong> Assets - Liabilities = Net Worth.</li>
+    <li><strong>Avoid Debt:</strong> Pay off high-interest loans first.</li>
+  </ul>
+</section>
+
+  </div>  <script>
+    let incomes = JSON.parse(localStorage.getItem('incomes')) || [];
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    const incomeForm = document.getElementById('income-form');
+    const incomeList = document.getElementById('income-list');
+    const expenseForm = document.getElementById('expense-form');
+    const expenseList = document.getElementById('expense-list');
+
+    const summaryIncome = document.getElementById('summary-income');
+    const summaryExpense = document.getElementById('summary-expense');
+    const summaryBalance = document.getElementById('summary-balance');
+
+    function updateSummary() {
+      let filteredIncome = filterByDate(incomes);
+      let filteredExpense = filterByDate(expenses);
+      let totalIncome = filteredIncome.reduce((a, b) => a + b.amount, 0);
+      let totalExpense = filteredExpense.reduce((a, b) => a + b.amount, 0);
+      summaryIncome.textContent = `Total Income: ₹${totalIncome}`;
+      summaryExpense.textContent = `Total Expenses: ₹${totalExpense}`;
+      summaryBalance.textContent = `Net Balance: ₹${totalIncome - totalExpense}`;
+    }
+
+    function renderIncomes() {
+      incomeList.innerHTML = '';
+      let filtered = filterByDate(incomes);
+      filtered.forEach((inc, i) => {
+        const li = document.createElement('li');
+        li.className = 'flex justify-between items-center bg-gray-50 p-2 rounded';
+        li.innerHTML = `<div><strong>${inc.desc}</strong> - ₹${inc.amount}<br/><span class="text-xs text-gray-600">${inc.date}</span></div><button onclick="deleteIncome(${i})" class="text-red-500 text-sm">Delete</button>`;
+        incomeList.appendChild(li);
+      });
+    }
+
+    function renderExpenses() {
+      expenseList.innerHTML = '';
+      let filtered = filterByDate(expenses);
+      filtered.forEach((exp, i) => {
+        const li = document.createElement('li');
+        li.className = 'flex justify-between items-center bg-gray-50 p-2 rounded';
+        li.innerHTML = `<div><strong>${exp.desc}</strong> - ₹${exp.amount}<br/><span class="text-xs text-gray-600">${exp.category} | ${exp.date}</span></div><button onclick="deleteExpense(${i})" class="text-red-500 text-sm">Delete</button>`;
+        expenseList.appendChild(li);
+      });
+    }
+
+    function filterByDate(arr) {
+      const dateVal = document.getElementById('filter-date').value;
+      if (!dateVal) return arr;
+      return arr.filter(entry => entry.date.startsWith(dateVal));
+    }
+
+    function applyFilters() {
+      renderIncomes();
+      renderExpenses();
+      updateSummary();
+      drawExpenseChart();
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-date').value = '';
+      applyFilters();
+    }
+
+    incomeForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const income = {
+        desc: incomeForm['income-desc'].value,
+        amount: parseFloat(incomeForm['income-amount'].value),
+        date: incomeForm['income-date'].value
+      };
+      incomes.push(income);
+      localStorage.setItem('incomes', JSON.stringify(incomes));
+      incomeForm.reset();
+      applyFilters();
+    });
+
+    expenseForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const expense = {
+        desc: expenseForm.desc.value,
+        amount: parseFloat(expenseForm.amount.value),
+        category: expenseForm.category.value,
+        date: expenseForm.date.value
+      };
+      expenses.push(expense);
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+      expenseForm.reset();
+      applyFilters();
+    });
+
+    function deleteIncome(i) {
+      incomes.splice(i, 1);
+      localStorage.setItem('incomes', JSON.stringify(incomes));
+      applyFilters();
+    }
+
+    function deleteExpense(i) {
+      expenses.splice(i, 1);
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+      applyFilters();
+    }
+
+    function drawExpenseChart() {
+      const ctx = document.getElementById('expense-chart');
+      if (!ctx) return;
+      const categories = {};
+      filterByDate(expenses).forEach(exp => {
+        categories[exp.category] = (categories[exp.category] || 0) + exp.amount;
+      });
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(categories),
+          datasets: [{
+            data: Object.values(categories),
+            backgroundColor: ['#f87171','#34d399','#60a5fa','#fbbf24']
+          }]
+        }
+      });
+    }
+
+    function calculateSIP() {
+      const amount = parseFloat(document.getElementById('sip-amount').value);
+      const years = parseFloat(document.getElementById('sip-years').value);
+      const rate = parseFloat(document.getElementById('sip-rate').value) / 100 / 12;
+      const months = years * 12;
+      const futureValue = amount * ((Math.pow(1 + rate, months) - 1) / rate) * (1 + rate);
+      document.getElementById('sip-result').textContent = `Value: ₹${futureValue.toFixed(2)}`;
+    }
+
+    function calculateLumpsum() {
+      const p = parseFloat(document.getElementById('lump-amount').value);
+      const r = parseFloat(document.getElementById('lump-rate').value) / 100;
+      const t = parseFloat(document.getElementById('lump-years').value);
+      const a = p * Math.pow(1 + r, t);
+      document.getElementById('lump-result').textContent = `Value: ₹${a.toFixed(2)}`;
+    }
+
+    applyFilters();
+  </script></body>
 </html>
