@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Games Button -->
+<div class="text-center mb-4">
+  <button onclick="alert('Games coming soon!')" class="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 hover:from-red-500 hover:to-pink-500 text-white font-bold py-2 px-6 rounded-full shadow-lg transition duration-300">
+    🎮 Games
+  </button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Games Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-10 px-4">
+
+  <h1 class="text-4xl font-bold mb-8">🎮 Games Hub</h1>
+  <p class="text-gray-400 mb-6 text-center">Choose a game to play. More coming soon!</p>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-md w-full">
+
+    <!-- Flappy Bird Button -->
+    <a href="https://flappybird.io/" target="_blank"
+       class="bg-green-500 hover:bg-green-600 rounded-xl p-6 flex flex-col items-center justify-center shadow-lg transition">
+      🐤
+      <span class="mt-2 font-bold">Flappy Bird</span>
+    </a>
+
+    <!-- Placeholder for Future Games -->
+    <div class="bg-gray-700 rounded-xl p-6 flex flex-col items-center justify-center text-gray-400 opacity-50">
+      🔒
+      <span class="mt-2">Coming Soon</span>
+    </div>
+
+    <div class="bg-gray-700 rounded-xl p-6 flex flex-col items-center justify-center text-gray-400 opacity-50">
+      🔒
+      <span class="mt-2">Coming Soon</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
