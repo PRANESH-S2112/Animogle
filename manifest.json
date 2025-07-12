@@ -1,0 +1,20 @@
+{
+  "name": "Animogle",
+  "short_name": "Animogle",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#111111",
+  "icons": [
+    {
+      "src": "play-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "play-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
